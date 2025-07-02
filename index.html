@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<!-- saved from url=(0025)https://www.sunrisemc.tw/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日出伺服器｜Minecraft伺服器｜生存｜紅石</title>
+    <link rel="icon" type="image/png" href="./source/favicon.png">
+    <link rel="stylesheet" href="./source/style.css">
+    <link href="./source/css" rel="stylesheet">
+    <link rel="stylesheet" href="./source/font-awesome.min.css">
+    <link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <meta content="日出伺服器" property="og:title">
+    <meta content="日出旅行團，很貴。日出伺服器，免費！" property="og:description">
+    <meta content="https://embed.com/this-is-the-site-url" property="og:url">
+    <meta content="https://embed.com/embedimage.png" property="og:image">
+    <meta content="#43B581" data-react-helmet="true" name="theme-color">
+</head>
+<body>
+    <script src="./source/jquery.min.js"></script>
+    <nav class="desktop_navbar">
+      <a href="#"><img class="desktop_navbar_logo_img" src="./source/favicon.png" alt="logo"></a>
+      <a href="https://wiki.sunrisemc.tw/" class="desktop_navbar_link" target="_blank"><i class="fa-solid fa-circle-info fa-fw"></i> Wiki</a>
+      <a href="https://discord.gg/3uEMfvv4d5" class="desktop_navbar_link" target="_blank"><i class="fa-brands fa-discord fa-fw"></i> Discord</a>
+      <a href="https://map.sunrisemc.tw/" class="desktop_navbar_link" target="_blank"><i class="fa-solid fa-location-dot fa-fw"></i> 地圖</a>
+      <a href="https://status.sunrisemc.tw/" class="desktop_navbar_link" target="_blank"><i class="fa-solid fa-toggle-on fa-fw"></i> 系統狀態</a>
+      <a href="#about" class="desktop_navbar_link scroll"><i class="fa-solid fa-user-nurse"></i> 成員</a>
+      <div>
+        <a href="#join" class="desktop_navbar_link2_div desktop_navbar_link2 scroll"> <i class="fa-solid fa-rocket"></i> 立即加入！</a>
+      </div>
+    </nav>
+
+    <div class="mobile_navbar">
+      <a href="https://www.sunrisemc.tw/#" class="mobile_navbar_logo_img_a"><img class="mobile_navbar_logo_img" src="./source/logo_small.png" alt="logo"></a>
+      <div id="mobile_navbar_links">
+        <a class="mobile_navbar_link" onclick="mobile_navbar_link_hider()" href="https://wiki.sunrisemc.tw/" target="_blank"><i class="fa-solid fa-circle-info fa-fw"></i> Wiki</a>
+        <a class="mobile_navbar_link" onclick="mobile_navbar_link_hider()" href="https://discord.gg/3uEMfvv4d5" target="_blank"><i class="fa-brands fa-discord fa-fw"></i> Discord</a>
+        <a class="mobile_navbar_link" onclick="mobile_navbar_link_hider()" href="https://map.sunrisemc.tw/" target="_blank"><i class="fa-solid fa-location-dot fa-fw"></i> 地圖</a>
+        <a class="mobile_navbar_link" onclick="mobile_navbar_link_hider()" href="https://status.sunrisemc.tw/" target="_blank"><i class="fa-solid fa-toggle-on fa-fw"></i> 系統狀態</a>
+        <a class="mobile_navbar_link scroll" onclick="mobile_navbar_link_hider()" href="#about"><i class="fa-solid fa-user-nurse"></i> 成員</a>
+        <a class="mobile_navbar_link scroll mobile_navbar_link2" onclick="mobile_navbar_link_hider()" href="#join">立即加入!</a>
+      </div>
+      <div class="icon" onclick="mobile_navbar_link_hider()">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+      <script>
+        function mobile_navbar_link_hider() {
+          var x = document.getElementById("mobile_navbar_links");
+          if (x.style.display === "flex") {
+            x.style.display = "none";
+          } else {
+            x.style.display = "flex";
+          }
+        }
+      </script>
+    </div>
+    <div class="mainflex">
+      <div class="main1">
+        <a class="main1_logo_a" href="https://www.sunrisemc.tw/#">
+          <img class="main1_logo" src="./source/logo.png" alt="logo">
+        </a>
+        <div class="main1_description">
+          <a href="https://mcsv.top/server/sunrisemc.tw"><img src="https://sr-api.sfirew.com/server/sunrisemc.tw/banner/motd.png?hl=tw&v=icrxPMseQR" class="status"></a>
+        </div>
+        <div class="main1_ipcopier_div">
+          <button class="main1_ipcopier" onclick="copyText()" type="button">
+            <span class="main1_ipcopier_text1">sunrisemc.tw</span>
+            <br>
+            <span class="main1_ipcopier_text2">點我複製</span>
+          </button>
+          <script>
+            function copyText() {
+                navigator.clipboard.writeText
+            ("sunrisemc.tw");
+                }
+            $(document).ready(function() {});
+        </script>
+        </div>
+        <a href="https://www.sunrisemc.tw/#more" class="scroll">
+          <img alt="downarrow" class="main1_downarrow" src="./source/downarrow.png">
+        </a>
+        <script>
+          const scrollLinks = document.querySelectorAll('.scroll');
+          scrollLinks.forEach(function(link) {
+            link.addEventListener('click', function(event) {
+              event.preventDefault();
+              const target = document.querySelector(link.getAttribute('href'));
+              const offsetTop = target.offsetTop;
+              window.scrollTo({
+                top: offsetTop,
+                behavior: 'smooth'
+              });
+            });
+          });
+        </script>
+      </div>
+      <div id="more"></div>
+      <div class="main2">
+        <a class="headline">我們的特色</a>
+        <div class="main2_features_div">
+          <div class="main2_feature">
+            <img class="main2_feature_img" alt="Feature Image" src="./source/claim.png">
+            <a class="main2_feature_headline">領地系統</a>
+            <a class="main2_feature_text">保護建築不被破壞</a>
+          </div>
+          <div class="main2_feature">
+            <img class="main2_feature_img" alt="Feature Image" src="./source/DC.png">
+            <a class="main2_feature_headline">Discord連結</a>
+            <a class="main2_feature_text">隨時隨地與伺服器玩家互動</a>
+          </div>
+          <div class="main2_feature">
+            <img class="main2_feature_img" alt="Feature Image" src="./source/2ver.png">
+            <a class="main2_feature_headline">雙版本聯通</a>
+            <a class="main2_feature_text">無論你是Java還是基岩玩家都可以遊玩</a>
+          </div>
+          <div class="main2_feature">
+            <img class="main2_feature_img" alt="Feature Image" src="./source/coin.png">
+            <a class="main2_feature_headline">交易系統</a>
+            <a class="main2_feature_text">讓您可以輕易兌換物資</a>
+          </div>
+          <div class="main2_feature">
+            <img class="main2_feature_img" alt="Feature Image" src="./source/act.png">
+            <a class="main2_feature_headline">活動</a>
+            <a class="main2_feature_text">舉辦不定期活動</a>
+          </div>
+        </div>
+      </div>
+      <div id="about"></div>
+      <div class="main5">
+        <a class="headline">我們是誰?</a>
+
+        <div class="main5_admin_div">
+          <div class="main5_admins_div main5_admins_dev_type2">
+            <img class="main5_admins_img" alt="admin member img" src="https://minotar.net/helm/GoogleDino_TW/600.png">
+            <div class="main5_admins_description_div">
+              <a class="main5_admins_description_rank main5_admins_description_rank_owner">服主</a>
+              <a class="main5_admins_description_title">GoogleDino_TW - 臭腐竹</a>
+              <a class="main5_admins_description">負責管理全部東西，有任何問題歡迎詢問</a>
+            </div>
+          </div>
+
+          <div class="main5_admins_div main5_admins_dev_type1">
+            <img class="main5_admins_img" alt="admin member img" src="https://minotar.net/helm/Easonlin1119/600.png">
+            <div class="main5_admins_description_div">
+              <a class="main5_admins_description_rank main5_admins_description_rank_admin">副服主</a>
+              <a class="main5_admins_description_title">Easonlin1119 - 豬神</a>
+              <a class="main5_admins_description">負責處理硬體事項</a>
+            </div>
+          </div>
+
+          <div class="main5_admins_div main5_admins_dev_type1">
+            <img class="main5_admins_img" alt="admin member img" src="https://minotar.net/helm/SisterCelia/600.png">
+            <div class="main5_admins_description_div">
+              <a class="main5_admins_description_rank main5_admins_description_rank_admin">管理員</a>
+              <a class="main5_admins_description_title">SisterCelia - 不知名的小希</a>
+              <a class="main5_admins_description">機器人維護、玩家糾紛處理</a>
+            </div>
+          </div>
+
+          <div class="main5_admins_div main5_admins_dev_type1">
+            <img class="main5_admins_img" alt="admin member img" src="https://minotar.net/helm/linchen180/600.png">
+            <div class="main5_admins_description_div">
+              <a class="main5_admins_description_rank main5_admins_description_rank_admin">管理員</a>
+              <a class="main5_admins_description_title">linchen180 - 凌晨</a>
+              <a class="main5_admins_description">玩家糾紛處理</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div id="join"></div>
+      <div class="main3">
+        <a class="headline">連線位置</a>
+        <div class="main3_join_div_div">
+          <div class="main3_join_div">
+            <a class="main3_join_title">Java</a>
+            <div class="main3_join_content_div">
+              <div class="main3_join_categories">
+                <a>IP:</a>
+                <a>Version:</a>
+              </div>
+              <div class="main3_join_values">
+                <a>je.sunrisemc.tw</a>
+                <a>1.21+</a>
+              </div>
+            </div>
+          </div>
+          <div class="main3_join_div">
+            <a class="main3_join_title">基岩</a>
+            <div class="main3_join_content_div">
+              <div class="main3_join_categories">
+                <a>IP:</a>
+                <a>Port:</a>
+              </div>
+              <div class="main3_join_values">
+                <a>be.sunrisemc.tw</a>
+                <a>19132</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="copyright_div">
+      <div class="copyright">日出伺服器 - Minecraft生存伺服器最佳選擇</div>
+    </footer>
+  
+
+</body></html>
