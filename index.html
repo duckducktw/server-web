@@ -7,17 +7,16 @@
     <title>日出伺服器｜Minecraft伺服器｜生存｜紅石</title>
     <link rel="icon" type="image/png" href="./source/favicon.png">
     <link rel="stylesheet" href="./source/style.css">
-    <link href="./source/css" rel="stylesheet">
-    <link rel="stylesheet" href="./source/font-awesome.min.css">
     <link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <meta content="日出伺服器" property="og:title">
-    <meta content="日出旅行團，很貴。日出伺服器，免費！" property="og:description">
+    <meta content="> 領地  > 生存  > 養老  > 交易" property="og:description">
     <meta content="https://embed.com/this-is-the-site-url" property="og:url">
     <meta content="https://embed.com/embedimage.png" property="og:image">
     <meta content="#43B581" data-react-helmet="true" name="theme-color">
 </head>
 <body>
-    <script src="./source/jquery.min.js"></script>
+    <script src="./source/jquery.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <nav class="desktop_navbar">
       <a href="#"><img class="desktop_navbar_logo_img" src="./source/favicon.png" alt="logo"></a>
       <a href="https://wiki.sunrisemc.tw/" class="desktop_navbar_link" target="_blank"><i class="fa-solid fa-circle-info fa-fw"></i> Wiki</a>
@@ -69,12 +68,18 @@
             <span class="main1_ipcopier_text2">點我複製</span>
           </button>
           <script>
+            console.log("被發現了...\n將此畫面截圖給管理員獲得日幣X1\n密碼: " + Math.floor(Math.random() * 1000000) + "\n每人限領一次，密碼限用一次")
             function copyText() {
-                navigator.clipboard.writeText
-            ("sunrisemc.tw");
-                }
-            $(document).ready(function() {});
-        </script>
+              navigator.clipboard.writeText("sunrisemc.tw")
+                .then(function() {
+                  Swal.fire({
+                    title: "IP 複製成功",
+                    icon: "success",
+                    html: `<img alt="複製成功" src="./source/join.gif" class="joingif">`, 
+                    confirmButtonText: `OK`,
+                  });
+                })
+            }</script>
         </div>
         <a href="https://www.sunrisemc.tw/#more" class="scroll">
           <img alt="downarrow" class="main1_downarrow" src="./source/downarrow.png">
