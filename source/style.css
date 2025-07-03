@@ -966,6 +966,7 @@ img {
 
 .status {
     width: 500px;
+    max-width: 80%;
     border-radius: 15px;
 }
 
@@ -1243,4 +1244,8 @@ input:focus {
 .main3_join_div > * {
     position: relative;
     z-index: 2;
+}
+
+.joingif {
+    width: 400px ;
 }
