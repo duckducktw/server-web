@@ -61,6 +61,16 @@
         <div class="main1_description">
           <a href="https://mcsv.top/server/sunrisemc.tw"><img src="https://sr-api.sfirew.com/server/sunrisemc.tw/banner/motd.png?hl=tw&v=icrxPMseQR" class="status"></a>
         </div>
+        <div class="main1_player_stats">
+          <div class="player_stat">
+            <span class="stat_value" id="total-players">...</span>
+            <span class="stat_label">位玩家曾家加入</span>
+          </div>
+          <div class="player_stat">
+            <span class="stat_value" id="claims">...</span>
+            <span class="stat_label">個領地已被建立</span>
+          </div>
+        </div>
         <div class="main1_ipcopier_div">
           <button class="main1_ipcopier" onclick="copyText()" type="button">
             <span class="main1_ipcopier_text1">sunrisemc.tw</span>
@@ -210,5 +220,44 @@
       <div class="copyright">日出伺服器 - Minecraft生存伺服器最佳選擇</div>
     </footer>
   
+    <script>
+      async function fetchPlayerStats() {
+        try {
+          const response = await fetch('https://api.sunrisemc.tw/info');
+          const data = await response.json();
+          
+          const totalPlayers = data;
 
+          let tempPlayers = 0;
+          let tempClaims = 0;
+
+          function updatePlayerCount() {
+            tempPlayers += (1 - tempPlayers) / 7;
+            document.getElementById('total-players').textContent = Math.ceil(totalPlayers[0] * tempPlayers);
+
+            if (Math.ceil(totalPlayers[0] * tempPlayers) !== totalPlayers[0]) {
+              setTimeout(updatePlayerCount, 50);
+            }
+          }
+
+          function updateClaimCount() {
+            tempClaims += (1 - tempClaims) / 7;
+            document.getElementById('claims').textContent = Math.ceil(totalPlayers[1] * tempClaims);
+
+            if (Math.ceil(totalPlayers[1] * tempClaims) !== totalPlayers[1]) {
+              setTimeout(updateClaimCount, 50);
+            }
+          }
+
+          updatePlayerCount()
+          updateClaimCount()
+        } catch (error) {
+          console.error('Error fetching player stats:', error);
+          document.getElementById('total-players').textContent = '1800+';
+          document.getElementById('active-players').textContent = '1200+';
+        }
+      }
+
+      fetchPlayerStats();
+    </script>
 </body></html>
