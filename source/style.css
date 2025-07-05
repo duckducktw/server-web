@@ -395,6 +395,34 @@ html {
     letter-spacing: -0.02em;
 }
 
+.main1_player_stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: calc(var(--nice-padding) / 2);
+    color: white;
+}
+
+.player_stat {
+    background: white;
+    color: var(--primary-orange);
+    padding: 1rem 1.5rem;
+    border-radius: var(--roundness-medium);
+    text-align: center;
+    min-width: 150px;
+}
+
+.stat_value {
+    font-size: 2rem;
+    font-weight: 700;
+    display: block;
+}
+
+.stat_label {
+    font-size: 1rem;
+    font-weight: 400;
+}
+
 .main1_actcent {
     font-weight: 700;
     background: linear-gradient(135deg, var(--primary-orange), var(--primary-orange-light));
