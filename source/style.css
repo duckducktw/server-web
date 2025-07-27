@@ -529,23 +529,19 @@ html {
     display: flex;
     align-items: stretch;
     justify-content: center;
-    flex-wrap: nowrap; /* 不允許換行，保持一橫排 */
-    gap: 1rem;
+    flex-wrap: wrap; /* 允許換行，適應不同螢幕大小 */
+    gap: 1.5rem;
     max-width: 100%;
-    overflow-x: auto; /* 允許水平滾動 */
-    -webkit-overflow-scrolling: touch; /* 改善 iOS 上的滾動體驗 */
     padding-bottom: 2rem;
-    scrollbar-width: thin; /* Firefox */
-    scrollbar-color: var(--primary-orange) var(--background-secondary); /* Firefox */
 }
 
 .main2_feature {
-    flex-shrink: 0; /* 防止項目縮小 */
+    flex: 1 1 20rem; /* 允許彈性縮放，最小寬度20rem */
     display: flex;
     background: var(--background-tertiary);
     backdrop-filter: blur(20px);
     min-height: 26rem;
-    width: 18rem; /* 固定寬度，讓5個特色能在一排顯示 */
+    max-width: 20rem; /* 最大寬度限制 */
     border-radius: var(--roundness-large);
     transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     flex-direction: column;
@@ -711,24 +707,19 @@ html {
 */
 .main5_admin_div { /* Changed from .main5_admin_list_container to target the existing div */
     display: flex;
-    flex-wrap: nowrap; /* 不允許換行，保持一橫排 */
+    flex-wrap: wrap; /* 允許卡片換行 */
     justify-content: center; /* 在容器中居中卡片 */
-    gap: 1.5rem; /* 卡片之間的間距 */
+    gap: 2rem; /* 卡片之間的間距 */
     max-width: 1200px; /* 卡片行的最大寬度 */
     margin: 2rem auto; /* 居中容器並添加垂直邊距 */
     padding: 0 1rem; /* 為較小螢幕添加水平內邊距 */
-    overflow-x: auto; /* 允許水平滾動 */
-    -webkit-overflow-scrolling: touch; /* 改善 iOS 上的滾動體驗 */
-    scrollbar-width: thin; /* Firefox */
-    scrollbar-color: var(--primary-orange) var(--background-secondary); /* Firefox */
 }
 
 .main5_admins_div {
     display: flex; /* 確保內部佈局為彈性盒模型 */
     flex-direction: column; /* 保持卡片內部內容垂直堆疊 */
     align-items: center; /* 在卡片內部水平居中內容 */
-    flex-shrink: 0; /* 防止項目縮小 */
-    width: 20rem; /* 為每個管理員卡片設置固定寬度，讓4個管理員能在一排顯示 */
+    width: 24rem; /* 為每個管理員卡片設置固定寬度 */
     min-height: auto; /* 允許高度根據內容調整 */
     background: var(--background-tertiary);
     border-radius: var(--roundness-large);
@@ -1008,20 +999,26 @@ img {
 /* Responsive design - Enhanced for all screen sizes */
 @media only screen and (max-width: 1200px) {
     .main2_features_div {
-        gap: 0.8rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.5rem;
         padding: 2rem 1rem;
     }
     
     .main2_feature {
-        width: 16rem; /* 稍微縮小寬度 */
+        flex: 1 1 calc(33.333% - 1rem);
+        min-width: 280px;
+        max-width: calc(33.333% - 1rem);
     }
     
     .main5_admin_div {
-        gap: 1rem;
+        flex-wrap: wrap;
+        gap: 1.5rem;
     }
     
     .main5_admins_div {
-        width: 18rem; /* 稍微縮小寬度 */
+        flex: 0 1 calc(50% - 1rem);
+        min-width: 280px;
     }
 }
 
@@ -1031,11 +1028,14 @@ img {
     }
     
     .main2_feature {
-        width: 15rem; /* 進一步縮小寬度 */
+        flex: 1 1 calc(50% - 1rem);
+        min-width: 250px;
+        max-width: calc(50% - 1rem);
     }
     
     .main5_admins_div {
-        width: 17rem; /* 進一步縮小寬度 */
+        flex: 0 1 calc(50% - 1rem);
+        min-width: 250px;
     }
     
     .main3_join_div_div {
@@ -1068,16 +1068,14 @@ img {
     }
     
     .main2_features_div {
-        gap: 0.8rem;
+        gap: 1.2rem;
         padding: 2rem 1rem;
     }
     
     .main2_feature {
-        width: 14rem; /* 進一步縮小寬度 */
-    }
-    
-    .main5_admins_div {
-        width: 16rem; /* 進一步縮小寬度 */
+        flex: 1 1 calc(50% - 0.8rem);
+        min-width: 220px;
+        max-width: calc(50% - 0.8rem);
     }
 }
 
@@ -1143,18 +1141,7 @@ img {
         max-width: 22rem;
         margin: 0 auto;
         min-height: 20rem;
-    }
-    
-    .main5_admin_div {
-        flex-direction: column;
-        gap: 1.5rem;
-        overflow-x: hidden;
-    }
-    
-    .main5_admins_div {
-        width: 100%;
-        max-width: 22rem;
-        margin: 0 auto;
+        flex: 1 1 auto;
     }
     
     .main2_feature_img {
@@ -1847,12 +1834,10 @@ img {
 /* Custom scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
-    height: 8px; /* 為水平滾動條添加高度 */
 }
 
 ::-webkit-scrollbar-track {
     background: var(--background-primary);
-    border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -1861,29 +1846,6 @@ img {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-orange-light);
-}
-
-/* 特色和管理員區塊的水平滾動條樣式 */
-.main2_features_div::-webkit-scrollbar,
-.main5_admin_div::-webkit-scrollbar {
-    height: 6px;
-}
-
-.main2_features_div::-webkit-scrollbar-track,
-.main5_admin_div::-webkit-scrollbar-track {
-    background: var(--background-secondary);
-    border-radius: 3px;
-}
-
-.main2_features_div::-webkit-scrollbar-thumb,
-.main5_admin_div::-webkit-scrollbar-thumb {
-    background: var(--primary-orange);
-    border-radius: 3px;
-}
-
-.main2_features_div::-webkit-scrollbar-thumb:hover,
-.main5_admin_div::-webkit-scrollbar-thumb:hover {
     background: var(--primary-orange-light);
 }
 
