@@ -107,6 +107,13 @@
               });
             });
           });
+
+
+        const url = new URLSearchParams(window.location.search);
+        const copy = url.get('copy');
+        if(copy != null) {
+          copyText();
+        }
         </script>
       </div>
       <div id="more"></div>
@@ -219,6 +226,7 @@
 
   
     <script>
+      
       async function fetchPlayerStats() {
         try {
           const response = await fetch('https://api.sunrisemc.tw/info');
