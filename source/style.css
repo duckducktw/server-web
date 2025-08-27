@@ -635,7 +635,7 @@ html {
     padding: 1rem 1.5rem;
     border-radius: var(--roundness-medium);
     text-align: center;
-    min-width: 150px;
+    min-width: 130px;
 }
 
 .stat_value {
@@ -1347,6 +1347,11 @@ img {
         display: flex;
     }
     
+    /* Avoid hero being covered by fixed mobile navbar */
+    .main1 {
+        padding-top: calc(var(--nice-padding) + 4.5rem);
+    }
+    
     .headline {
         font-size: 2.5rem;
         margin: 0 1rem;
@@ -1356,6 +1361,8 @@ img {
     .main1_logo {
         max-width: 18rem;
         width: 90%;
+        /* Prevent float animation from intersecting navbar on small screens */
+        animation: none;
     }
     
     .main1_description {
@@ -1364,15 +1371,21 @@ img {
         padding: 0 1rem;
     }
     
+    /* Mobile: horizontal scrollable stats row */
     .main1_player_stats {
-        flex-direction: column;
+        flex-direction: row;
         gap: 1rem;
         margin-bottom: 2rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
     }
     
     .player_stat {
         min-width: 200px;
         padding: 1.5rem;
+        flex: 0 0 auto;
+        scroll-snap-align: start;
     }
     
     .stat_value {
