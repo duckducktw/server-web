@@ -103,6 +103,10 @@
                     html: `<img alt="複製成功" src="./source/join.gif" class="joingif">`, 
                     confirmButtonText: `OK`,
                   });
+                }).catch((e) => {
+                  setTimeout(() => {
+                    copyText();
+                  }, 500);
                 })
             }</script>
         </div>
@@ -417,7 +421,7 @@
 
         createParticles() {
           const particleCount = 15;
-          console.log('創建粒子，數量:', particleCount);
+          //console.log('創建粒子，數量:', particleCount);
           
           for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
@@ -438,7 +442,7 @@
             this.container.appendChild(particle);
             this.particles.push(particle);
           }
-          console.log('粒子創建完成，實際創建數量:', this.particles.length);
+          //console.log('粒子創建完成，實際創建數量:', this.particles.length);
         }
 
         setupMouseTracking() {
@@ -549,9 +553,9 @@
       // 初始化背景互動元件
       let backgroundInteractive;
       document.addEventListener('DOMContentLoaded', function() {
-        console.log('初始化背景互動元件...');
+        //console.log('初始化背景互動元件...');
         backgroundInteractive = new BackgroundInteractive();
-        console.log('背景互動元件已初始化');
+        //console.log('背景互動元件已初始化');
         
         // 響應式處理
         window.addEventListener('resize', () => {
