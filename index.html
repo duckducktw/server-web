@@ -60,10 +60,24 @@
       <script>
         function mobile_navbar_link_hider() {
           var x = document.getElementById("mobile_navbar_links");
-          if (x.style.display === "flex") {
-            x.style.display = "none";
+          // If already closing, ignore rapid toggles
+          if (x.classList.contains('is-closing')) return;
+
+          if (x.classList.contains('is-open')) {
+            // Start closing animation
+            x.classList.remove('is-open');
+            x.classList.add('is-closing');
+
+            // After animation ends, cleanup and hide
+            const onAnimEnd = (e) => {
+              if (e.target !== x) return; // ensure container event
+              x.classList.remove('is-closing');
+              x.removeEventListener('animationend', onAnimEnd);
+            };
+            x.addEventListener('animationend', onAnimEnd);
           } else {
-            x.style.display = "flex";
+            // Open with animation
+            x.classList.add('is-open');
           }
         }
       </script>
