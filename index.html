@@ -38,6 +38,22 @@
           <i class="fa-solid fa-sun sun-icon"></i>
           <i class="fa-solid fa-moon moon-icon"></i>
         </button>
+        
+        <!-- 音量控制容器 -->
+        <div class="volume-control-container">
+          <button class="volume-toggle" id="volumeToggle">
+            <i class="fa-solid fa-volume-high" id="volumeIcon"></i>
+          </button>
+          <!-- 直接顯示在導航欄中的音量控制條 -->
+          <div class="volume-slider-wrapper" id="volumeSliderWrapper">
+            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50">
+          </div>
+        </div>
+        
+        <!-- 音樂播放器 -->
+        <audio id="backgroundMusic" preload="auto" autoplay>
+          <source src="./source/music.mp3" type="audio/mpeg">
+        </audio>
     </nav>
 
     <div class="mobile_navbar">
@@ -53,6 +69,17 @@
           <i class="fa-solid fa-sun" id="mobileSunIcon"></i>
           <span class="toggle-text" id="mobileToggleText">切換至黑色模式</span>
         </button>
+        
+        <!-- 手機版音量控制 -->
+        <div class="mobile-volume-control">
+          <div class="mobile-volume-header">
+            <i class="fa-solid fa-volume-high"></i>
+            <span>音量控制</span>
+          </div>
+          <div class="mobile-volume-slider-wrapper">
+            <input type="range" class="mobile-volume-slider" id="mobileVolumeSlider" min="0" max="100" value="50">
+          </div>
+        </div>
       </div>
       <div class="icon" onclick="mobile_navbar_link_hider()">
         <i class="fa-solid fa-bars"></i>
@@ -109,19 +136,65 @@
           <script>
             console.log("被發現了...\n將此畫面截圖給管理員獲得日幣X1\n密碼: " + Math.floor(Math.random() * 1000000) + "\n每人限領一次，密碼限用一次")
             function copyText() {
-              navigator.clipboard.writeText("sunrisemc.tw")
-                .then(function() {
+              // 檢查是否支援 clipboard API
+              if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText("sunrisemc.tw")
+                  .then(function() {
+                    Swal.fire({
+                      title: "IP 複製成功",
+                      icon: "success",
+                      html: `<img alt="複製成功" src="./source/join.gif" class="joingif">`, 
+                      confirmButtonText: `OK`,
+                    });
+                  })
+                  .catch(function(err) {
+                    // 如果 clipboard API 失敗，使用 fallback 方法
+                    fallbackCopyTextToClipboard("sunrisemc.tw");
+                  });
+              } else {
+                // 使用 fallback 方法
+                fallbackCopyTextToClipboard("sunrisemc.tw");
+              }
+            }
+
+            // Fallback 複製方法
+            function fallbackCopyTextToClipboard(text) {
+              const textArea = document.createElement("textarea");
+              textArea.value = text;
+              textArea.style.position = "fixed";
+              textArea.style.left = "-999999px";
+              textArea.style.top = "-999999px";
+              document.body.appendChild(textArea);
+              textArea.focus();
+              textArea.select();
+              
+              try {
+                const successful = document.execCommand('copy');
+                if (successful) {
                   Swal.fire({
                     title: "IP 複製成功",
                     icon: "success",
                     html: `<img alt="複製成功" src="./source/join.gif" class="joingif">`, 
                     confirmButtonText: `OK`,
                   });
-                }).catch((e) => {
-                  setTimeout(() => {
-                    copyText();
-                  }, 500);
-                })
+                } else {
+                  Swal.fire({
+                    title: "複製失敗",
+                    text: "請手動複製: " + text,
+                    icon: "error",
+                    confirmButtonText: `OK`,
+                  });
+                }
+              } catch (err) {
+                Swal.fire({
+                  title: "複製失敗",
+                  text: "請手動複製: " + text,
+                  icon: "error",
+                  confirmButtonText: `OK`,
+                });
+              }
+              
+              document.body.removeChild(textArea);
             }</script>
         </div>
         <a href="https://www.sunrisemc.tw/#more" class="scroll">
@@ -598,6 +671,320 @@
           });
         }
       });
+    </script>
+
+    <!-- 音樂播放和音量控制功能 -->
+    <script>
+      class MusicPlayer {
+        constructor() {
+          this.audio = document.getElementById('backgroundMusic');
+          this.volumeSlider = document.getElementById('volumeSlider');
+          this.mobileVolumeSlider = document.getElementById('mobileVolumeSlider');
+          this.volumeIcon = document.getElementById('volumeIcon');
+          this.volumeToggle = document.getElementById('volumeToggle');
+          // 移除對已刪除元素的引用
+          
+          this.isPlaying = false;
+          this.volume = 0.5; // 預設50%音量
+          this.retryInterval = null;
+          this.fadeInterval = null;
+          this.retryCount = 0;
+          this.maxRetries = 100; // 最大重試次數
+          
+          this.init();
+        }
+
+        init() {
+          // 設置初始音量
+          this.audio.volume = this.volume;
+          this.updateVolumeDisplay();
+          this.updateVolumeSliderBackground();
+          
+          // 設置音樂事件監聽器
+          this.setupAudioEvents();
+          
+          // 設置音量控制事件監聽器
+          this.setupVolumeControls();
+          
+          // 自動播放音樂
+          this.autoPlayMusic();
+        }
+
+        setupAudioEvents() {
+          // 音樂結束時重新播放
+          this.audio.addEventListener('ended', () => {
+            //console.log('音樂播放結束，開始重播');
+            this.audio.currentTime = 0;
+            // 直接播放音樂，不需要淡入效果
+            this.audio.play().then(() => {
+              this.isPlaying = true;
+              this.playWithFadeIn();
+            }).catch(error => {
+              console.error('重播失敗:', error);
+              // 如果重播失敗，嘗試重新載入音樂
+              this.audio.load();
+              this.audio.play().then(() => {
+                this.isPlaying = true;
+                this.playWithFadeIn();
+              }).catch(err => {
+                console.error('重新載入後播放仍然失敗:', err);
+              });
+            });
+          });
+
+          // 音樂載入完成時
+          this.audio.addEventListener('canplaythrough', () => {
+            //console.log('音樂載入完成');
+          });
+
+          // 音樂播放錯誤處理
+          this.audio.addEventListener('error', (e) => {
+            console.error('音樂播放錯誤:', e);
+            this.retryPlay();
+          });
+
+          // 音樂開始播放時
+          this.audio.addEventListener('play', () => {
+            this.isPlaying = true;
+            //console.log('音樂開始播放');
+          });
+
+          // 音樂暫停時
+          this.audio.addEventListener('pause', () => {
+            this.isPlaying = false;
+            //console.log('音樂暫停');
+          });
+        }
+
+        setupVolumeControls() {
+          // 桌面版音量滑塊
+          this.volumeSlider.addEventListener('input', (e) => {
+            this.setVolume(e.target.value / 100);
+          });
+
+          // 手機版音量滑塊
+          this.mobileVolumeSlider.addEventListener('input', (e) => {
+            this.setVolume(e.target.value / 100);
+          });
+
+          // 桌面版音量滑塊滾輪控制
+          this.volumeSlider.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -5 : 5;
+            const newValue = Math.max(0, Math.min(100, parseInt(this.volumeSlider.value) + delta));
+            this.volumeSlider.value = newValue;
+            this.setVolume(newValue / 100);
+          });
+        }
+
+        setVolume(volume) {
+          this.volume = Math.max(0, Math.min(1, volume));
+          this.audio.volume = this.volume;
+          this.updateVolumeDisplay();
+          this.updateVolumeSliderBackground();
+          
+          // 更新音量圖示
+          this.updateVolumeIcon();
+        }
+
+        updateVolumeDisplay() {
+          const volumePercent = Math.round(this.volume * 100);
+          this.volumeSlider.value = volumePercent;
+          this.mobileVolumeSlider.value = volumePercent;
+        }
+
+        updateVolumeIcon() {
+          if (this.volume === 0) {
+            this.volumeIcon.className = 'fa-solid fa-volume-xmark';
+          } else {
+            this.volumeIcon.className = 'fa-solid fa-volume-high';
+          }
+          
+          // 強制更新圖示
+          this.volumeIcon.style.display = 'none';
+          this.volumeIcon.offsetHeight; // 觸發重排
+          this.volumeIcon.style.display = '';
+        }
+
+        updateVolumeSliderBackground() {
+          const volumePercent = this.volume * 100;
+          const gradient = `linear-gradient(to right, var(--primary-orange) 0%, var(--primary-orange) ${volumePercent}%, var(--background-tertiary) ${volumePercent}%, var(--background-tertiary) 100%)`;
+          
+          this.volumeSlider.style.background = gradient;
+          this.mobileVolumeSlider.style.background = gradient;
+        }
+
+        async autoPlayMusic() {
+          try {
+            // 設置音量為0開始淡入
+            this.audio.volume = 0;
+            await this.audio.play();
+            this.isPlaying = true;
+            this.playWithFadeIn();
+            //console.log('音樂自動播放成功');
+            this.retryCount = 0; // 重置重試計數
+          } catch (error) {
+            //console.log('自動播放被阻擋，將每500ms重試:', error);
+            this.retryPlay();
+          }
+        }
+
+        async tryPlayMusic() {
+          try {
+            // 設置音量為0開始淡入
+            this.audio.volume = 0;
+            await this.audio.play();
+            this.isPlaying = true;
+            this.playWithFadeIn();
+            //console.log('音樂開始播放');
+            this.retryCount = 0; // 重置重試計數
+          } catch (error) {
+            c//onsole.log('播放被阻擋，將每500ms重試:', error);
+            this.retryCount++;
+            if (this.retryCount < this.maxRetries) {
+              this.retryPlay();
+            } else {
+              //console.log('達到最大重試次數，停止重試');
+            }
+          }
+        }
+
+        retryPlay() {
+          if (this.retryInterval) {
+            clearInterval(this.retryInterval);
+          }
+          
+          this.retryInterval = setInterval(async () => {
+            try {
+              await this.audio.play();
+              this.isPlaying = true;
+              this.playWithFadeIn();
+              clearInterval(this.retryInterval);
+              this.retryInterval = null;
+              this.retryCount = 0; // 重置重試計數
+              //console.log('音樂重試播放成功');
+            } catch (error) {
+              this.retryCount++;
+              //console.log(`重試播放失敗 (${this.retryCount}/${this.maxRetries})，繼續重試...`);
+            
+            }
+          }, 500);
+        }
+
+        playWithFadeIn() {
+          if (this.fadeInterval) {
+            clearInterval(this.fadeInterval);
+          }
+          
+          let currentVolume = 0;
+          const targetVolume = this.volume;
+          const fadeStep = targetVolume / 50; // 2秒淡入
+          
+          this.fadeInterval = setInterval(() => {
+            currentVolume = Math.min(targetVolume, currentVolume + fadeStep);
+            this.audio.volume = currentVolume;
+            
+            if (currentVolume >= targetVolume) {
+              clearInterval(this.fadeInterval);
+              this.fadeInterval = null;
+            }
+          }, 40);
+        }
+
+        pauseWithFadeOut() {
+          if (this.fadeInterval) {
+            clearInterval(this.fadeInterval);
+          }
+          
+          let currentVolume = this.audio.volume;
+          const fadeStep = currentVolume / 25; // 1秒淡出
+          
+          this.fadeInterval = setInterval(() => {
+            currentVolume = Math.max(0, currentVolume - fadeStep);
+            this.audio.volume = currentVolume;
+            
+            if (currentVolume <= 0) {
+              clearInterval(this.fadeInterval);
+              this.fadeInterval = null;
+              this.audio.pause();
+              this.isPlaying = false;
+            }
+          }, 40);
+        }
+      }
+
+      // 音量控制顯示/隱藏功能 - 已移除，現在使用CSS hover效果
+
+      // 初始化音樂播放器
+      let musicPlayer;
+      document.addEventListener('DOMContentLoaded', function() {
+        musicPlayer = new MusicPlayer();
+        
+        // 頁面載入完成後再次嘗試播放音樂
+        setTimeout(() => {
+          if (musicPlayer && !musicPlayer.isPlaying) {
+            musicPlayer.autoPlayMusic();
+          }
+        }, 1000);
+
+        // 製造假的使用者互動來觸發音樂播放
+        setTimeout(() => {
+          // 模擬點擊事件
+          const fakeClickEvent = new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true
+          });
+          document.dispatchEvent(fakeClickEvent);
+          
+          // 模擬觸摸事件
+          const fakeTouchEvent = new TouchEvent('touchstart', {
+            bubbles: true,
+            cancelable: true
+          });
+          document.dispatchEvent(fakeTouchEvent);
+          
+          // 模擬鍵盤事件
+          const fakeKeyEvent = new KeyboardEvent('keydown', {
+            key: ' ',
+            bubbles: true,
+            cancelable: true
+          });
+          document.dispatchEvent(fakeKeyEvent);
+          
+          //console.log('已觸發假的使用者互動事件');
+        }, 2000);
+      });
+
+      // 頁面可見性變化時處理音樂播放
+      document.addEventListener('visibilitychange', () => {
+        if (musicPlayer) {
+          if (document.hidden) {
+            // 頁面隱藏時淡出音樂
+            musicPlayer.pauseWithFadeOut();
+          } else {
+            // 頁面顯示時淡入音樂
+            if (musicPlayer.isPlaying) {
+              musicPlayer.playWithFadeIn();
+            } else {
+              musicPlayer.autoPlayMusic();
+            }
+          }
+        }
+      });
+
+      // 用戶互動後嘗試播放音樂
+      document.addEventListener('click', function() {
+        if (musicPlayer && !musicPlayer.isPlaying) {
+          musicPlayer.autoPlayMusic();
+        }
+      }, { once: true });
+
+      document.addEventListener('touchstart', function() {
+        if (musicPlayer && !musicPlayer.isPlaying) {
+          musicPlayer.autoPlayMusic();
+        }
+      }, { once: true });
     </script>
 </body>
 <footer class="copyright_div">
