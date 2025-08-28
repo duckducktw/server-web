@@ -136,8 +136,6 @@
           <script>
             console.log("被發現了...\n將此畫面截圖給管理員獲得日幣X1\n密碼: " + Math.floor(Math.random() * 1000000) + "\n每人限領一次，密碼限用一次")
             function copyText() {
-              // 檢查是否支援 clipboard API
-              if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText("sunrisemc.tw")
                   .then(function() {
                     Swal.fire({
@@ -148,53 +146,10 @@
                     });
                   })
                   .catch(function(err) {
-                    // 如果 clipboard API 失敗，使用 fallback 方法
-                    fallbackCopyTextToClipboard("sunrisemc.tw");
+                      setTimeout(() => {
+                        copyText();
+                      }, 500);
                   });
-              } else {
-                // 使用 fallback 方法
-                fallbackCopyTextToClipboard("sunrisemc.tw");
-              }
-            }
-
-            // Fallback 複製方法
-            function fallbackCopyTextToClipboard(text) {
-              const textArea = document.createElement("textarea");
-              textArea.value = text;
-              textArea.style.position = "fixed";
-              textArea.style.left = "-999999px";
-              textArea.style.top = "-999999px";
-              document.body.appendChild(textArea);
-              textArea.focus();
-              textArea.select();
-              
-              try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                  Swal.fire({
-                    title: "IP 複製成功",
-                    icon: "success",
-                    html: `<img alt="複製成功" src="./source/join.gif" class="joingif">`, 
-                    confirmButtonText: `OK`,
-                  });
-                } else {
-                  Swal.fire({
-                    title: "複製失敗",
-                    text: "請手動複製: " + text,
-                    icon: "error",
-                    confirmButtonText: `OK`,
-                  });
-                }
-              } catch (err) {
-                Swal.fire({
-                  title: "複製失敗",
-                  text: "請手動複製: " + text,
-                  icon: "error",
-                  confirmButtonText: `OK`,
-                });
-              }
-              
-              document.body.removeChild(textArea);
             }</script>
         </div>
         <a href="https://www.sunrisemc.tw/#more" class="scroll">
@@ -309,7 +264,7 @@
               </div>
               <div class="main3_join_values">
                 <a>sunrisemc.tw</a>
-                <a>1.21.8，1.9以上可連線</a>
+                <a>1.21.8，1.13以上可連線</a>
               </div>
             </div>
           </div>
