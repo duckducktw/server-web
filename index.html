@@ -81,13 +81,13 @@
     <div class="mobile_navbar">
       <a href="https://www.sunrisemc.tw/#" class="mobile_navbar_logo_img_a"><img class="mobile_navbar_logo_img" src="./source/logo_small.png" alt="logo"></a>
       <div id="mobile_navbar_links">
-        <a class="mobile_navbar_link" onclick="mobile_navbar_link_hider()" href="https://wiki.sunrisemc.tw/" target="_blank"><i class="fa-solid fa-circle-info fa-fw"></i> Wiki</a>
-        <a class="mobile_navbar_link" onclick="mobile_navbar_link_hider()" href="https://discord.gg/3uEMfvv4d5" target="_blank"><i class="fa-brands fa-discord fa-fw"></i> Discord</a>
-        <a class="mobile_navbar_link" onclick="mobile_navbar_link_hider()" href="https://map.sunrisemc.tw/" target="_blank"><i class="fa-solid fa-location-dot fa-fw"></i> 地圖</a>
-        <a class="mobile_navbar_link" onclick="mobile_navbar_link_hider()" href="https://status.sunrisemc.tw/" target="_blank"><i class="fa-solid fa-toggle-on fa-fw"></i> 系統狀態</a>
-        <a class="mobile_navbar_link scroll" onclick="mobile_navbar_link_hider()" href="#about"><i class="fa-solid fa-user-nurse"></i> 成員</a>
-        <a class="mobile_navbar_link scroll mobile_navbar_link2" onclick="mobile_navbar_link_hider()" href="#join">立即加入!</a>
-        <button class="mobile-theme-toggle" id="mobileThemeToggle" onclick="toggleTheme(); mobile_navbar_link_hider();">
+        <a class="mobile_navbar_link" onclick="mobile_navbar_close()" href="https://wiki.sunrisemc.tw/" target="_blank"><i class="fa-solid fa-circle-info fa-fw"></i> Wiki</a>
+        <a class="mobile_navbar_link" onclick="mobile_navbar_close()" href="https://discord.gg/3uEMfvv4d5" target="_blank"><i class="fa-brands fa-discord fa-fw"></i> Discord</a>
+        <a class="mobile_navbar_link" onclick="mobile_navbar_close()" href="https://map.sunrisemc.tw/" target="_blank"><i class="fa-solid fa-location-dot fa-fw"></i> 地圖</a>
+        <a class="mobile_navbar_link" onclick="mobile_navbar_close()" href="https://status.sunrisemc.tw/" target="_blank"><i class="fa-solid fa-toggle-on fa-fw"></i> 系統狀態</a>
+        <a class="mobile_navbar_link scroll" onclick="mobile_navbar_close()" href="#about"><i class="fa-solid fa-user-nurse"></i> 成員</a>
+        <a class="mobile_navbar_link scroll mobile_navbar_link2" onclick="mobile_navbar_close()" href="#join">立即加入!</a>
+        <button class="mobile-theme-toggle" id="mobileThemeToggle" onclick="toggleTheme(); mobile_navbar_close();">
           <i class="fa-solid fa-sun" id="mobileSunIcon"></i>
           <span class="toggle-text" id="mobileToggleText">切換至黑色模式</span>
         </button>
@@ -110,16 +110,16 @@
         </button>
         <!-- 手機版用戶下拉選單 -->
         <div class="mobile-user-dropdown" id="mobileUserDropdown">
-          <div class="dropdown-item" onclick="showProfile(); mobile_navbar_link_hider();">
+          <div class="dropdown-item" onclick="showProfile(); mobile_navbar_close();">
             <i class="fa-solid fa-user"></i>
             <span>基本資料</span>
           </div>
-          <div class="dropdown-item" onclick="showDonations(); mobile_navbar_link_hider();">
+          <div class="dropdown-item" onclick="showDonations(); mobile_navbar_close();">
             <i class="fa-solid fa-heart"></i>
             <span>贊助紀錄</span>
           </div>
           <div class="dropdown-divider"></div>
-          <div class="dropdown-item logout" onclick="logout(); mobile_navbar_link_hider();">
+          <div class="dropdown-item logout" onclick="logout(); mobile_navbar_close();">
             <i class="fa-solid fa-sign-out-alt"></i>
             <span>登出</span>
           </div>
@@ -150,6 +150,20 @@
           } else {
             // Open with animation
             x.classList.add('is-open');
+          }
+        }
+        // 僅關閉手機選單（不切換），避免在點擊需要關閉的操作時意外開啟
+        function mobile_navbar_close() {
+          var x = document.getElementById("mobile_navbar_links");
+          if (x.classList.contains('is-open') && !x.classList.contains('is-closing')) {
+            x.classList.remove('is-open');
+            x.classList.add('is-closing');
+            const onAnimEnd = (e) => {
+              if (e.target !== x) return;
+              x.classList.remove('is-closing');
+              x.removeEventListener('animationend', onAnimEnd);
+            };
+            x.addEventListener('animationend', onAnimEnd);
           }
         }
       </script>
@@ -1139,10 +1153,14 @@
             
             // 防止背景滾動
             document.body.style.overflow = 'hidden';
+            // 標記 Body 狀態，讓 CSS 能即時隱藏手機選單以避免同時顯示
+            document.body.classList.add('modal-open');
             
             // 關閉所有下拉選單
             if (userDropdown) {
               userDropdown.closeAllDropdowns();
+              // 同時關閉手機版選單，避免與模態視窗同時顯示
+              userDropdown.closeMobileMenu();
             }
             
             // 動畫完成後重置狀態
@@ -1172,9 +1190,12 @@
             // 添加關閉動畫類
             this.overlay.classList.remove('show');
             this.overlay.classList.add('closing');
+            // 在關閉過程中持續隱藏手機選單
+            document.body.classList.add('modal-closing');
             
-            // 動畫結束後清理
-            setTimeout(() => {
+            const onAnimEnd = (e) => {
+              if (e.target !== this.overlay) return;
+              this.overlay.removeEventListener('animationend', onAnimEnd);
               this.overlay.classList.remove('closing');
               const modals = this.overlay.querySelectorAll('.modal');
               modals.forEach(modal => {
@@ -1182,10 +1203,20 @@
               });
               this.activeModal = null;
               this.isAnimating = false;
-              
-              // 恢復背景滾動
+
+              // 恢復背景滾動並移除狀態類
               document.body.style.overflow = '';
-            }, 250); // 與CSS動畫時間一致
+              document.body.classList.remove('modal-open');
+              document.body.classList.remove('modal-closing');
+            };
+            // 使用動畫結束事件避免時間誤差
+            this.overlay.addEventListener('animationend', onAnimEnd);
+            // 退場保險：若事件丟失，於300ms後強制清理
+            setTimeout(() => {
+              if (this.isAnimating) {
+                onAnimEnd({ target: this.overlay });
+              }
+            }, 300);
           }
         }
       }

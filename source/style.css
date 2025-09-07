@@ -502,6 +502,16 @@ html {
     animation: menuReveal 0.28s ease-out both;
 }
 
+/* 當模態視窗開啟時，強制隱藏手機版選單，避免同時顯示 */
+body.modal-open .mobile_navbar #mobile_navbar_links {
+    display: none !important;
+}
+
+/* 模態關閉動畫期間也隱藏，避免關閉瞬間閃出 */
+body.modal-closing .mobile_navbar #mobile_navbar_links {
+    display: none !important;
+}
+
 /* Stagger children on open */
 .mobile_navbar #mobile_navbar_links.is-open > * {
     opacity: 0;
