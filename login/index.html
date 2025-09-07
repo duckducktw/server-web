@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日出伺服器 - 登入</title>
+</head>
+<body>
+    <script>
+        const token = localStorage.getItem("token");
+        if(token) {
+            window.location.replace("../");
+        } else {
+            window.location.replace("https://discord.com/oauth2/authorize?client_id=1317853345494601819&response_type=code&redirect_uri=https%3A%2F%2Faccount.sunrisemc.tw%2Flogin&scope=identify+email");
+        }
+    </script>
+</body>
+</html>

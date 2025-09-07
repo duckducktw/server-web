@@ -49,6 +49,28 @@
             <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50">
           </div>
         </div>
+
+        <div class="user-container">
+          <button class="avator" id="useravator">
+            <img src="https://minotar.net/helm/user/600.png" onerror="this.onerror=null; this.src='https://minotar.net/helm/FreehandCargo95/600.png';" alt="圖片" class="avator-img">
+          </button>
+          <!-- 桌面版用戶下拉選單 -->
+          <div class="user-dropdown" id="userDropdown">
+            <div class="dropdown-item" onclick="showProfile()">
+              <i class="fa-solid fa-user"></i>
+              <span>基本資料</span>
+            </div>
+            <div class="dropdown-item" onclick="showDonations()">
+              <i class="fa-solid fa-heart"></i>
+              <span>贊助紀錄</span>
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-item logout" onclick="logout()">
+              <i class="fa-solid fa-sign-out-alt"></i>
+              <span>登出</span>
+            </div>
+          </div>
+        </div>
         
         <!-- 音樂播放器 -->
         <audio id="backgroundMusic" preload="auto" autoplay>
@@ -81,6 +103,29 @@
           </div>
         </div>
       </div>
+
+      <div class="mobile-user-container">
+        <button class="avator" id="mobileUseravator">
+          <img src="https://minotar.net/helm/user/600.png" onerror="this.onerror=null; this.src='https://minotar.net/helm/FreehandCargo95/600.png';" alt="圖片" class="avator-img">
+        </button>
+        <!-- 手機版用戶下拉選單 -->
+        <div class="mobile-user-dropdown" id="mobileUserDropdown">
+          <div class="dropdown-item" onclick="showProfile(); mobile_navbar_link_hider();">
+            <i class="fa-solid fa-user"></i>
+            <span>基本資料</span>
+          </div>
+          <div class="dropdown-item" onclick="showDonations(); mobile_navbar_link_hider();">
+            <i class="fa-solid fa-heart"></i>
+            <span>贊助紀錄</span>
+          </div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item logout" onclick="logout(); mobile_navbar_link_hider();">
+            <i class="fa-solid fa-sign-out-alt"></i>
+            <span>登出</span>
+          </div>
+        </div>
+      </div>
+
       <div class="icon" onclick="mobile_navbar_link_hider()">
         <i class="fa-solid fa-bars"></i>
       </div>
@@ -941,6 +986,445 @@
         }
       }, { once: true });
     </script>
+
+    <script>
+      // 用戶下拉選單功能
+      class UserDropdown {
+        constructor() {
+          this.desktopAvatar = document.getElementById('useravator');
+          this.mobileAvatar = document.getElementById('mobileUseravator');
+          this.desktopDropdown = document.getElementById('userDropdown');
+          this.mobileDropdown = document.getElementById('mobileUserDropdown');
+          this.mobileMenu = document.getElementById('mobile_navbar_links');
+          
+          this.init();
+        }
+
+        init() {
+          // 桌面版頭像點擊事件
+          if (this.desktopAvatar) {
+            this.desktopAvatar.addEventListener('click', (e) => {
+              e.stopPropagation();
+              this.toggleDesktopDropdown();
+            });
+          }
+
+          // 手機版頭像點擊事件
+          if (this.mobileAvatar) {
+            this.mobileAvatar.addEventListener('click', (e) => {
+              e.stopPropagation();
+              this.toggleMobileDropdown();
+            });
+          }
+
+          // 點擊外部關閉下拉選單
+          document.addEventListener('click', (e) => {
+            if (!e.target.closest('.user-container') && !e.target.closest('.mobile-user-container')) {
+              this.closeAllDropdowns();
+            }
+          });
+
+          // 手機版選單按鈕點擊事件
+          const mobileMenuButton = document.querySelector('.mobile_navbar .icon');
+          if (mobileMenuButton) {
+            mobileMenuButton.addEventListener('click', () => {
+              this.closeMobileDropdown();
+            });
+          }
+        }
+
+        toggleDesktopDropdown() {
+          if (this.desktopDropdown) {
+            const isOpen = this.desktopDropdown.classList.contains('show');
+            this.closeAllDropdowns();
+            if (!isOpen) {
+              this.desktopDropdown.classList.add('show');
+            }
+          }
+        }
+
+        toggleMobileDropdown() {
+          if (this.mobileDropdown) {
+            const isOpen = this.mobileDropdown.classList.contains('show');
+            this.closeAllDropdowns();
+            if (!isOpen) {
+              this.mobileDropdown.classList.add('show');
+            }
+          }
+        }
+
+        closeDesktopDropdown() {
+          if (this.desktopDropdown) {
+            this.desktopDropdown.classList.remove('show');
+          }
+        }
+
+        closeMobileDropdown() {
+          if (this.mobileDropdown) {
+            this.mobileDropdown.classList.remove('show');
+          }
+        }
+
+        closeAllDropdowns() {
+          this.closeDesktopDropdown();
+          this.closeMobileDropdown();
+        }
+
+        // 檢查手機版選單是否開啟
+        isMobileMenuOpen() {
+          return this.mobileMenu && this.mobileMenu.classList.contains('is-open');
+        }
+
+        // 關閉手機版選單
+        closeMobileMenu() {
+          if (this.mobileMenu && this.isMobileMenuOpen()) {
+            this.mobileMenu.classList.remove('is-open');
+            this.mobileMenu.classList.add('is-closing');
+            
+            const onAnimEnd = (e) => {
+              if (e.target !== this.mobileMenu) return;
+              this.mobileMenu.classList.remove('is-closing');
+              this.mobileMenu.removeEventListener('animationend', onAnimEnd);
+            };
+            this.mobileMenu.addEventListener('animationend', onAnimEnd);
+          }
+        }
+      }
+
+      // 模態窗口管理類
+      class ModalManager {
+        constructor() {
+          this.overlay = document.getElementById('modalOverlay');
+          this.activeModal = null;
+          this.isAnimating = false;
+          this.init();
+        }
+
+        init() {
+          // 點擊背景關閉模態窗口
+          if (this.overlay) {
+            this.overlay.addEventListener('click', (e) => {
+              if (e.target === this.overlay) {
+                this.closeAllModals();
+              }
+            });
+          }
+
+          // ESC鍵關閉模態窗口
+          document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.activeModal) {
+              this.closeAllModals();
+            }
+          });
+        }
+
+        showModal(modalId) {
+          const modal = document.getElementById(modalId);
+          if (modal && this.overlay && !this.isAnimating) {
+            // 先確保所有模態窗口都隱藏
+            this.hideAllModals();
+            
+            // 然後打開指定的模態窗口
+            this.openModal(modalId);
+          }
+        }
+
+        hideAllModals() {
+          const modals = this.overlay.querySelectorAll('.modal');
+          modals.forEach(modal => {
+            modal.style.display = 'none';
+          });
+        }
+
+        openModal(modalId) {
+          const modal = document.getElementById(modalId);
+          if (modal && this.overlay) {
+            this.isAnimating = true;
+            this.activeModal = modalId;
+            this.overlay.classList.add('show');
+            modal.style.display = 'block';
+            
+            // 防止背景滾動
+            document.body.style.overflow = 'hidden';
+            
+            // 關閉所有下拉選單
+            if (userDropdown) {
+              userDropdown.closeAllDropdowns();
+            }
+            
+            // 動畫完成後重置狀態
+            setTimeout(() => {
+              this.isAnimating = false;
+            }, 300);
+          }
+        }
+
+        closeModal(modalId) {
+          const modal = document.getElementById(modalId);
+          if (modal && this.overlay) {
+            this.animateClose();
+          }
+        }
+
+        closeAllModals() {
+          if (this.overlay) {
+            this.animateClose();
+          }
+        }
+
+        animateClose() {
+          if (this.overlay && !this.isAnimating) {
+            this.isAnimating = true;
+            
+            // 添加關閉動畫類
+            this.overlay.classList.remove('show');
+            this.overlay.classList.add('closing');
+            
+            // 動畫結束後清理
+            setTimeout(() => {
+              this.overlay.classList.remove('closing');
+              const modals = this.overlay.querySelectorAll('.modal');
+              modals.forEach(modal => {
+                modal.style.display = 'none';
+              });
+              this.activeModal = null;
+              this.isAnimating = false;
+              
+              // 恢復背景滾動
+              document.body.style.overflow = '';
+            }, 250); // 與CSS動畫時間一致
+          }
+        }
+      }
+
+      // 用戶功能函數
+      function showProfile() {
+        if (modalManager) {
+          modalManager.showModal('profileModal');
+        }
+      }
+
+      function showDonations() {
+        if (modalManager) {
+          modalManager.showModal('donationsModal');
+        }
+      }
+
+      function closeModal(modalId) {
+        if (modalManager) {
+          modalManager.closeModal(modalId);
+        }
+      }
+
+      // 複製到剪貼板功能
+      function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+          // 顯示複製成功提示
+          const toast = document.createElement('div');
+          toast.className = 'copy-toast';
+          toast.textContent = '已複製到剪貼板';
+          toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-orange);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--roundness-small);
+            box-shadow: var(--shadow-medium);
+            z-index: 10000;
+            font-weight: 500;
+            animation: slideInRight 0.3s ease-out;
+          `;
+          
+          document.body.appendChild(toast);
+          
+          // 3秒後移除提示
+          setTimeout(() => {
+            toast.style.animation = 'slideOutRight 0.3s ease-in forwards';
+            setTimeout(() => {
+              if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+              }
+            }, 300);
+          }, 3000);
+        }).catch(err => {
+          console.error('複製失敗:', err);
+          // 降級方案：使用舊的複製方法
+          const textArea = document.createElement('textarea');
+          textArea.value = text;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+          
+          alert('已複製到剪貼板');
+        });
+      }
+
+      function logout() {
+        document.querySelector('.user-container').innerHTML = '<a href="/login" class="avator-img"><i class="fa-solid fa-right-to-bracket"></i></a>'
+        document.querySelector('.mobile-user-container').innerHTML = '<a href="/login" class="avator-img"><i class="fa-solid fa-right-to-bracket"></i></a>'
+        localStorage.removeItem("token");
+      }
+
+      // 初始化用戶下拉選單和模態窗口管理器
+      let userDropdown;
+      let modalManager;
+      document.addEventListener('DOMContentLoaded', function() {
+        userDropdown = new UserDropdown();
+        modalManager = new ModalManager();
+      });
+
+      // 修改原有的手機版選單函數，添加與用戶下拉選單的互斥邏輯
+      const originalMobileNavbarLinkHider = window.mobile_navbar_link_hider;
+      window.mobile_navbar_link_hider = function() {
+        // 如果用戶下拉選單開啟，先關閉它
+        if (userDropdown) {
+          userDropdown.closeMobileDropdown();
+        }
+        // 執行原有的選單切換邏輯
+        if (originalMobileNavbarLinkHider) {
+          originalMobileNavbarLinkHider();
+        }
+      };
+    </script>
+
+    <script>
+      const token = localStorage.getItem("token");
+      async function check() {
+        if(token) {
+          const check = await fetch('https://account.sunrisemc.tw/check/?token=' + token);
+          const info = await check.json()
+
+          //console.log(info);
+          if (info['linked']) {
+            document.querySelector('#player-id').innerHTML = info['name'];
+            document.querySelector('#player-uuid').innerHTML = info['uuid'];
+            document.querySelector('#discord-id').innerHTML = info['discord'];
+
+            document.querySelector('.avator-img').src = 'https://minotar.net/helm/' + info['name'] + '/600.png';
+            document.querySelector('.profile-avatar-img').src = 'https://minotar.net/helm/' + info['name'] + '/600.png';
+          } else {
+            document.querySelector('.user-container').innerHTML = '<a href="/login" class="avator-img"><i class="fa-solid fa-right-to-bracket"></i></a>'
+            document.querySelector('.mobile-user-container').innerHTML = '<a href="/login" class="avator-img"><i class="fa-solid fa-right-to-bracket"></i></a>'
+            localStorage.removeItem("token");
+            Swal.fire({
+              icon: "error",
+              title: "登入失敗",
+              text: "原因：該Discord帳戶尚未連結至Minecraft帳號，請連結後重新登入！",
+              footer: '<a href="https://wiki.sunrisemc.tw/jia-ru-wo-men/lian-jie-discord" target="_blank">連結教學</a>'
+            });
+          }
+        } else {
+          document.querySelector('.user-container').innerHTML = '<a href="/login" class="avator-img"><i class="fa-solid fa-right-to-bracket"></i></a>'
+          document.querySelector('.mobile-user-container').innerHTML = '<a href="/login" class="avator-img"><i class="fa-solid fa-right-to-bracket"></i></a>'
+        }
+      }
+      check()
+    </script>
+
+    <!-- 模態窗口容器 -->
+    <div class="modal-overlay" id="modalOverlay">
+      <!-- 基本資訊模態窗口 -->
+      <div class="modal" id="profileModal">
+        <div class="modal-header">
+          <h2 class="modal-title">基本資訊</h2>
+          <button class="modal-close" onclick="closeModal('profileModal')">
+            <i class="fa-solid fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-content">
+          <div class="profile-info">
+            <div class="profile-avatar">
+              <img src="https://minotar.net/helm/user/600.png" onerror="this.onerror=null; this.src='https://minotar.net/helm/FreehandCargo95/600.png';" alt="玩家頭像" class="profile-avatar-img">
+            </div>
+            <div class="profile-details">
+              <div class="profile-item">
+                <label class="profile-label">玩家名稱</label>
+                <span class="profile-value" id="player-id">...</span>
+              </div>
+              <div class="profile-item">
+                <label class="profile-label">UUID</label>
+                <span class="profile-value uuid" id="player-uuid">...</span>
+              </div>
+              <div class="profile-item">
+                <label class="profile-label">Discord ID</label>
+                <span class="profile-value" id="discord-id">...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 贊助紀錄模態窗口 -->
+      <div class="modal" id="donationsModal">
+        <div class="modal-header">
+          <h2 class="modal-title">贊助紀錄 *未完成，請忽略內容</h2>
+          <button class="modal-close" onclick="closeModal('donationsModal')">
+            <i class="fa-solid fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-content">
+          <div class="donations-container">
+            <div class="donations-summary">
+              <div class="summary-item">
+                <span class="summary-label">總贊助金額</span>
+                <span class="summary-value">NT$ 2,500</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">贊助次數</span>
+                <span class="summary-value">5 次</span>
+              </div>
+            </div>
+            <div class="donations-table-container">
+              <table class="donations-table">
+                <thead>
+                  <tr>
+                    <th>贊助時間</th>
+                    <th>贊助金額</th>
+                    <th>贊助項目</th>
+                    <th>贊助感言</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>2024-01-15 14:30</td>
+                    <td class="amount">NT$ 500</td>
+                    <td class="item">VIP 月卡</td>
+                    <td class="message">感謝伺服器提供這麼好的遊戲環境！</td>
+                  </tr>
+                  <tr>
+                    <td>2024-02-10 09:15</td>
+                    <td class="amount">NT$ 300</td>
+                    <td class="item">鑽石包</td>
+                    <td class="message">支持伺服器發展，加油！</td>
+                  </tr>
+                  <tr>
+                    <td>2024-03-05 16:45</td>
+                    <td class="amount">NT$ 800</td>
+                    <td class="item">VIP 季卡</td>
+                    <td class="message">伺服器越來越好了，值得支持！</td>
+                  </tr>
+                  <tr>
+                    <td>2024-04-12 11:20</td>
+                    <td class="amount">NT$ 200</td>
+                    <td class="item">金幣包</td>
+                    <td class="message">小小心意，希望伺服器越來越好</td>
+                  </tr>
+                  <tr>
+                    <td>2024-05-20 13:10</td>
+                    <td class="amount">NT$ 700</td>
+                    <td class="item">特殊稱號</td>
+                    <td class="message">感謝管理員們的用心經營！</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 </body>
 <footer class="copyright_div">
   <div class="copyright">日出伺服器 - Minecraft生存伺服器最佳選擇</div>

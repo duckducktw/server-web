@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日出伺服器 - 登入</title>
+</head>
+<body>
+    <h1>正在登入中，如果超過10秒請點<a href="../../">此</a>返回首頁</h1>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
+        
+        if (token) {
+            // 存入 token
+            localStorage.setItem("token", token);
+
+            // 0.5秒後跳轉，避免存入還沒完成
+            setTimeout(() => {
+                window.location.replace("../../");
+            }, 500);
+        } else {
+            console.error("Token 不存在，無法登入");
+        }
+    </script>
+</body>
+</html>
