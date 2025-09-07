@@ -1017,13 +1017,6 @@
             });
           }
 
-          // 點擊外部關閉下拉選單
-          document.addEventListener('click', (e) => {
-            if (!e.target.closest('.user-container') && !e.target.closest('.mobile-user-container')) {
-              this.closeAllDropdowns();
-            }
-          });
-
           // 手機版選單按鈕點擊事件
           const mobileMenuButton = document.querySelector('.mobile_navbar .icon');
           if (mobileMenuButton) {
