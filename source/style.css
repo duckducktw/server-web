@@ -3142,7 +3142,7 @@ input:focus {
 }
 
 .donations-table-container {
-    overflow-x: auto;
+    overflow-x: hidden;
     border-radius: var(--roundness-medium);
     border: 1px solid var(--background-tertiary);
     background: var(--background-secondary);
