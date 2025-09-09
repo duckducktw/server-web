@@ -3240,7 +3240,7 @@ input:focus {
 }
 
 /* 響應式設計 */
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
     .modal {
         width: 95vw;
         margin: 1rem;
