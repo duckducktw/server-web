@@ -52,7 +52,7 @@
 
         <div class="user-container">
           <button class="avator" id="useravator">
-            <img src="https://minotar.net/helm/user/600.png" onerror="this.onerror=null; this.src='https://minotar.net/helm/FreehandCargo95/600.png';" alt="圖片" class="avator-img">
+            <img src="./source/loading.gif" alt="圖片" class="avator-img">
           </button>
           <!-- 桌面版用戶下拉選單 -->
           <div class="user-dropdown" id="userDropdown">
@@ -106,7 +106,7 @@
 
       <div class="mobile-user-container">
         <button class="avator" id="mobileUseravator">
-          <img src="https://minotar.net/helm/user/600.png" onerror="this.onerror=null; this.src='https://minotar.net/helm/FreehandCargo95/600.png';" alt="圖片" class="avator-img">
+          <img src="./source/loading.gif" alt="圖片" class="avator-img">
         </button>
         <!-- 手機版用戶下拉選單 -->
         <div class="mobile-user-dropdown" id="mobileUserDropdown">
@@ -1327,8 +1327,27 @@
             document.querySelector('#player-uuid').innerHTML = info['uuid'];
             document.querySelector('#discord-id').innerHTML = info['discord'];
 
-            document.querySelector('.avator-img').src = 'https://minotar.net/helm/' + info['name'] + '/600.png';
+            document.querySelectorAll('.avator-img').forEach(img => {
+                img.src = 'https://minotar.net/helm/' + info['name'] + '/600.png';
+            });
             document.querySelector('.profile-avatar-img').src = 'https://minotar.net/helm/' + info['name'] + '/600.png';
+
+            let totalMoney = 0;
+            if(info['history'].length > 0) {
+              info['history'].forEach(e => {
+                document.querySelector('#donate-sheet').innerHTML += `
+                <tr>
+                  <td>${e[0]}</td>
+                  <td class="amount">${e[1]}</td>
+                  <td class="item">${e[2]}</td>
+                  <td class="message">${e[3]}</td>
+                </tr>
+                `
+                totalMoney += parseInt(e[1]);
+              });
+            }
+            document.querySelector('#total-money').innerHTML = `NT$ ${totalMoney}`
+            document.querySelector('#total-count').innerHTML = `${info['history'].length} 次`
           } else {
             document.querySelector('.user-container').innerHTML = '<a href="/login" class="avator-img"><i class="fa-solid fa-right-to-bracket"></i></a>'
             document.querySelector('.mobile-user-container').innerHTML = '<a href="/login" class="avator-img"><i class="fa-solid fa-right-to-bracket"></i></a>'
@@ -1361,7 +1380,7 @@
         <div class="modal-content">
           <div class="profile-info">
             <div class="profile-avatar">
-              <img src="https://minotar.net/helm/user/600.png" onerror="this.onerror=null; this.src='https://minotar.net/helm/FreehandCargo95/600.png';" alt="玩家頭像" class="profile-avatar-img">
+              <img src="./source/loading.gif" alt="玩家頭像" class="profile-avatar-img">
             </div>
             <div class="profile-details">
               <div class="profile-item">
@@ -1394,11 +1413,11 @@
             <div class="donations-summary">
               <div class="summary-item">
                 <span class="summary-label">總贊助金額</span>
-                <span class="summary-value">NT$ 2,500</span>
+                <span class="summary-value" id="total-money">...</span>
               </div>
               <div class="summary-item">
                 <span class="summary-label">贊助次數</span>
-                <span class="summary-value">5 次</span>
+                <span class="summary-value" id="total-count">...</span>
               </div>
             </div>
             <div class="donations-table-container">
@@ -1411,37 +1430,7 @@
                     <th>贊助感言</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>2024-01-15 14:30</td>
-                    <td class="amount">NT$ 500</td>
-                    <td class="item">VIP 月卡</td>
-                    <td class="message">感謝伺服器提供這麼好的遊戲環境！</td>
-                  </tr>
-                  <tr>
-                    <td>2024-02-10 09:15</td>
-                    <td class="amount">NT$ 300</td>
-                    <td class="item">鑽石包</td>
-                    <td class="message">支持伺服器發展，加油！</td>
-                  </tr>
-                  <tr>
-                    <td>2024-03-05 16:45</td>
-                    <td class="amount">NT$ 800</td>
-                    <td class="item">VIP 季卡</td>
-                    <td class="message">伺服器越來越好了，值得支持！</td>
-                  </tr>
-                  <tr>
-                    <td>2024-04-12 11:20</td>
-                    <td class="amount">NT$ 200</td>
-                    <td class="item">金幣包</td>
-                    <td class="message">小小心意，希望伺服器越來越好</td>
-                  </tr>
-                  <tr>
-                    <td>2024-05-20 13:10</td>
-                    <td class="amount">NT$ 700</td>
-                    <td class="item">特殊稱號</td>
-                    <td class="message">感謝管理員們的用心經營！</td>
-                  </tr>
+                <tbody id="donate-sheet">
                 </tbody>
               </table>
             </div>
