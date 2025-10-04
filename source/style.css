@@ -28,6 +28,12 @@
     --shadow-orange: 0 4px 20px rgba(255, 87, 34, 0.2); /* 更新陰影顏色 */
 
     color-scheme: light; /* 設置為亮色模式 */
+    /* Frosted glass variables (light theme) */
+    --glass-blur: 12px; /* default blur for frosted elements */
+    --glass-sat: 180%; /* saturation for backdrop */
+    --glass-tint: rgba(255, 255, 255, 0.65); /* light tint used for overlays */
+    --glass-border: rgba(255, 255, 255, 0.55); /* subtle glass border */
+    --glass-inner-shadow: rgba(0,0,0,0.06);
 }
 
 /* 黑色模式變數 */
@@ -809,7 +815,11 @@ body.modal-closing .mobile_navbar #mobile_navbar_links {
     right: 0;
     bottom: 0;
     /* 請確保 'bp.png' 圖片的路徑正確，否則將無法顯示 */
-    opacity: 0.05; /* 降低背景圖片透明度，使其更不明顯 */
+    /* Apply global frosted overlay for hero */
+    background: var(--background-glass);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+    opacity: 0.30; /* make background image softer under the frosted layer */
     z-index: 0;
     /* 如果你希望 ::before 偽元素也使用相同的背景圖片並填滿，可以取消註釋下面兩行 */
     /* background: url('bp.png') no-repeat center center; */
@@ -863,7 +873,7 @@ body.modal-closing .mobile_navbar #mobile_navbar_links {
 }
 
 .player_stat {
-    background: white;
+    background: var(--background-glass);
     color: var(--primary-orange);
     padding: 1rem 1.5rem;
     border-radius: var(--roundness-medium);
@@ -935,8 +945,9 @@ body.modal-closing .mobile_navbar #mobile_navbar_links {
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0);
-    background: var(--background-elevated);
-    backdrop-filter: blur(20px);
+    background: var(--background-glass);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
     border: 1px solid var(--primary-orange);
     color: var(--text-primary);
     border-radius: var(--roundness-medium);
@@ -979,8 +990,9 @@ body.modal-closing .mobile_navbar #mobile_navbar_links {
     flex-direction: column;
     align-items: center;
     padding: 4rem 2rem;
-    background: rgba(240, 242, 245, 0.7);
-    backdrop-filter: blur(5px);
+    background: var(--background-glass);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
     width: 100%;
     position: relative;
     z-index: 2;
@@ -1000,8 +1012,9 @@ body.modal-closing .mobile_navbar #mobile_navbar_links {
 .main2_feature {
     flex: 1 1 20rem; /* 允許彈性縮放，最小寬度20rem */
     display: flex;
-    background: var(--background-tertiary);
-    backdrop-filter: blur(20px);
+    background: var(--background-glass);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
     min-height: 26rem;
     max-width: 20rem; /* 最大寬度限制 */
     border-radius: var(--roundness-large);
@@ -1057,8 +1070,9 @@ body.modal-closing .mobile_navbar #mobile_navbar_links {
     flex-direction: column;
     align-items: center;
     padding: 4rem 2rem;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(5px);
+    background: var(--background-glass);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
     position: relative;
     z-index: 2;
 }
@@ -1073,7 +1087,7 @@ body.modal-closing .mobile_navbar #mobile_navbar_links {
     margin: 2rem;
     display: flex;
     flex-direction: row;
-    background: var(--background-secondary);
+    background: var(--background-glass);
     border-radius: var(--roundness-large);
     max-width: 50rem;
     overflow: hidden;
@@ -1153,8 +1167,9 @@ body.modal-closing .mobile_navbar #mobile_navbar_links {
 
 /* Team section */
 .main5 {
-    background: rgba(240, 242, 245, 0.7);
-    backdrop-filter: blur(5px);
+    background: var(--background-glass);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
     width: 100%;
     display: flex;
     justify-content: center;
@@ -1189,7 +1204,7 @@ body.modal-closing .mobile_navbar #mobile_navbar_links {
     align-items: center; /* 在卡片內部水平居中內容 */
     width: 24rem; /* 為每個管理員卡片設置固定寬度 */
     min-height: auto; /* 允許高度根據內容調整 */
-    background: var(--background-tertiary);
+    background: var(--background-glass);
     border-radius: var(--roundness-large);
     padding: 1.5rem; /* 調整內邊距以獲得更好的外觀 */
     overflow: hidden;
@@ -1284,7 +1299,7 @@ body.modal-closing .mobile_navbar #mobile_navbar_links {
 .main5_supporters_div {
     width: 24rem;
     min-height: 18rem;
-    background: var(--background-tertiary);
+    background: var(--background-glass);
     border-radius: var(--roundness-large);
     display: flex;
     overflow: hidden;
@@ -1354,8 +1369,9 @@ body.modal-closing .mobile_navbar #mobile_navbar_links {
 
 /* Join section */
 .main3 {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(5px);
+    background: var(--background-glass);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
     width: 100%;
     display: flex;
     justify-content: center;
@@ -1421,7 +1437,7 @@ body.modal-closing .mobile_navbar #mobile_navbar_links {
 .main3_join_content_div {
     display: flex;
     flex-direction: row;
-    background: var(--background-tertiary);
+    background: var(--background-glass);
     flex-grow: 1;
     border-radius: var(--roundness-medium);
     align-items: center;
@@ -2579,6 +2595,84 @@ img {
         rgba(255, 87, 34, 0.05) 50%, /* 更新顏色 */
         rgba(255, 87, 34, 0.1) 100%); /* 更新顏色 */
     pointer-events: none;
+}
+
+/* Frosted/glass utility classes (reusable) */
+/* Dark theme variations */
+[data-theme="dark"] {
+    --glass-tint: rgba(13, 17, 23, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.03);
+    --glass-inner-shadow: rgba(0,0,0,0.6);
+    --glass-blur: 10px;
+    --glass-sat: 140%;
+}
+
+/* Core frosted utility - subtle, works on cards, navs, modals */
+.frosted,
+.glass-card {
+    background: linear-gradient(180deg, var(--glass-tint), rgba(255,255,255,0.35));
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+    box-shadow: 0 6px 24px var(--glass-inner-shadow);
+    border-radius: var(--roundness-medium);
+}
+
+/* Stronger, more opaque glass (for elevated UI) */
+.glass-strong {
+    background: linear-gradient(180deg, rgba(255,255,255,0.82), rgba(255,255,255,0.7));
+    border: 1px solid rgba(255,255,255,0.6);
+    backdrop-filter: blur(calc(var(--glass-blur) + 8px)) saturate(calc(var(--glass-sat) + 40%));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) + 8px)) saturate(calc(var(--glass-sat) + 40%));
+    box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+}
+
+/* Accent glass variant with theme tint */
+.glass-accent {
+    background: linear-gradient(135deg, rgba(255,87,34,0.08), rgba(255,87,34,0.03));
+    border: 1px solid rgba(255,87,34,0.06);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+    box-shadow: 0 6px 24px rgba(255,87,34,0.06);
+}
+
+/* Lightweight helper for small translucent chips */
+.glass-chip {
+    background: rgba(255,255,255,0.6);
+    border-radius: calc(var(--roundness-small) * 0.7);
+    padding: 0.25rem 0.6rem;
+    border: 1px solid rgba(255,255,255,0.5);
+    backdrop-filter: blur(6px) saturate(var(--glass-sat));
+    -webkit-backdrop-filter: blur(6px) saturate(var(--glass-sat));
+    color: var(--text-primary);
+}
+
+/* Dark variants fallback colors are handled by CSS vars defined in [data-theme="dark"] */
+
+/* Accessibility: reduce heavy backdrop effects when user prefers reduced transparency */
+@media (prefers-reduced-transparency: reduce) {
+    .frosted,
+    .glass-card,
+    .glass-strong,
+    .glass-accent,
+    .glass-chip {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background-color: var(--background-elevated) !important;
+        border: 1px solid var(--background-tertiary) !important;
+        box-shadow: var(--shadow-medium) !important;
+    }
+}
+
+/* prefers-reduced-motion: avoid animating heavy glass transitions */
+@media (prefers-reduced-motion: reduce) {
+    .frosted,
+    .glass-card,
+    .glass-strong,
+    .glass-accent,
+    .glass-chip {
+        transition: none !important;
+    }
 }
 
 /* Custom scrollbar */
